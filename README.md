@@ -1,70 +1,138 @@
-# Getting Started with Create React App
+# 🛋️ AI Interior Designer
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A full-stack generative AI app where users upload a photo of their room and get a brand new interior design based on a text prompt. Uses a depth-aware Stable Diffusion model to retain layout while applying new styles.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🚀 Project Overview
 
-### `npm start`
+This application demonstrates an end-to-end generative AI product:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+* Upload an image of any room
+* Describe a style (e.g., "A modern, minimalist bedroom with dark wood furniture")
+* Get a new, AI-generated room redesign
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Built with a separate frontend and backend to showcase full-stack capabilities.
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🛠️ Tech Stack
 
-### `npm run build`
+* **Frontend**: React.js, Tailwind CSS
+* **Backend**: Python, Flask
+* **Generative AI**:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+  * HuggingFace `diffusers`
+  * Stable Diffusion 2 (Depth-to-Image)
+  * PyTorch
+* **Tools**: Git, GitHub, VS Code, Docker (optional deployment)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 📂 Project Structure
 
-### `npm run eject`
+```bash
+ai-interior-designer/
+├── frontend/          # React app
+│   ├── src/
+│   │   ├── App.js
+│   │   └── index.css
+│   ├── public/
+│   └── package.json
+│
+├── backend/           # Flask server + AI logic
+│   ├── server.py
+│   └── static/        # Auto-generated output images
+│
+└── README.md          # This file
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## ⚙️ How to Run
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+This app runs two servers: backend (Flask) and frontend (React).
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 1. Clone the Repository
 
-## Learn More
+```bash
+git clone https://github.com/adityav-123/AI-Interior-Designer.git
+cd AI-Interior-Designer
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 2. Backend Setup
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```bash
+cd backend
+python -m venv venv
 
-### Code Splitting
+# Activate virtual environment
+# Windows:
+venv\Scripts\activate
+# macOS/Linux:
+source venv/bin/activate
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+# Install dependencies
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+pip install Flask Flask-Cors diffusers transformers accelerate Pillow opencv-python
 
-### Analyzing the Bundle Size
+# Start the server
+python server.py
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+> 🕒 Note: First run downloads the Stable Diffusion model (a few GBs).
 
-### Making a Progressive Web App
+### 3. Frontend Setup
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Open a new terminal:
 
-### Advanced Configuration
+```bash
+cd frontend
+npm install
+npm start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+App opens at: `http://localhost:3000`
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## 🌊 Workflow: How It Works
 
-### `npm run build` fails to minify
+### 1. User Uploads Image & Prompt (Frontend)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+* React UI takes user input
+
+### 2. API Request
+
+* Frontend sends a POST request to `/api/generate` with image and prompt
+
+### 3. AI Generation (Backend)
+
+* Flask receives the request
+* Loads `stabilityai/stable-diffusion-2-depth`
+* Extracts a **depth map** to understand room geometry
+* Generates a new image guided by the depth map and prompt
+
+### 4. Result Sent Back
+
+* New image saved to `backend/static`
+* URL returned to frontend
+* React displays the result
+
+---
+
+## 🔮 Future Improvements
+
+### 🧠 ControlNet Integration
+
+* Add support for Canny edges, segmentation masks, etc.
+
+### 🐳 Dockerization
+
+* Create Dockerfiles for frontend and backend
+
+### ☁️ Cloud Deployment
+
+* Host on GPU-enabled services (AWS, GCP, Hugging Face)
+
+---
